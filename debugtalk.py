@@ -37,6 +37,50 @@ def get_access_token():
     except KeyError as e:
         token = None
     return token
+# 参数实战：
+def get_params01():
+    return ['newdream','12306','火车票']
+def get_params02():
+    return [['newdream','newdream_百度搜索'],['12306','12306_百度搜索'],['火车票','火车票_百度搜索']]
+def get_random_int(min,max,count=3):
+    num_list = []
+    for i in range(count):
+        num_list.append( random.randint(min,max) )
+    return num_list
+
+def get_random_string(base_str,str_len,count=3):
+    string_list = []
+    for i in range(count):
+        string = ''
+        for j in range(int(str_len)):
+            string = string + base_str[random.randint(0,len(base_str)-1)]
+        string_list.append(string)
+    return string_list
+
+def get_random_phonenum(*mobile_num,count=3):
+    phonenum_list = []
+    for i in range(count):
+        phone_start = random.choice(mobile_num)
+        phone_end = ''.join( random.sample('0123456789',8) )
+        phonenum_list.append( phone_start + phone_end )
+    return phonenum_list
 
 if __name__=='__main__':
-    print( get_access_token()  )
+    # print( get_random_phonenum(['131','132','133'])  )
+    print( get_random_phonenum('131','132')  )
+    # str1 = '1234567890abcdefghi中国我们'
+    # # 需求：上述的字符串为底，用它们的字母组合生成随机字符串
+    # # print(len(str1))
+    # # print( str1[random.randint(0,len(str1)-1)] )
+    # str2 = ''
+    # for i in range(10):
+    #     str2 = str2 + str1[random.randint(0,len(str1)-1)]
+    # print(str2)
+    # 需求：实现随机手机号 131  132  133
+    # mobile_num = ['131','132','133']
+    # print( random.choice(mobile_num) )
+    # # 131 0123456789 == 8
+    # print( random.sample('0123456789',8) )
+    # a = ['5', '0', '8', '6', '4', '3', '7', '2']
+    # print( random.choice(mobile_num) + ''.join( a ) )
+
