@@ -5,6 +5,8 @@
 # @time: 2020/11/4 8:30 下午
 import random
 import requests
+from faker import Faker
+import pymysql
 
 def get_search_word():
     word_list = ['newdream','12306','火车票','新梦想软测教育']
@@ -49,6 +51,7 @@ def get_random_int(min,max,count=3):
     return num_list
 
 def get_random_string(base_str,str_len,count=3):
+    base_str = base_str + '!@#¥%^'
     string_list = []
     for i in range(count):
         string = ''
@@ -60,27 +63,43 @@ def get_random_string(base_str,str_len,count=3):
 def get_random_phonenum(*mobile_num,count=3):
     phonenum_list = []
     for i in range(count):
-        phone_start = random.choice(mobile_num)
+        phone_start = str(random.choice(mobile_num))
         phone_end = ''.join( random.sample('0123456789',8) )
         phonenum_list.append( phone_start + phone_end )
     return phonenum_list
 
+def get_random_name(count=3):
+    f = Faker(locale='zh_CN')
+    name_list = []
+    for i in range(count):
+        name_list.append( f.name() )
+    return name_list
+
+def get_params_by_mysql(case_name):
+    mysql_connect = pymysql.connect(host='localhost', port=3306,
+                                    user='root', password='123456',
+                                    database='api_test', charset='utf8')
+    cur = mysql_connect.cursor()
+    cur.execute("select test_data,excepted_result from test_data where case_name like '%s%%';"%case_name)
+    case_data = cur.fetchall()
+    cur.close()
+    mysql_connect.close()
+    list_case_data = list(case_data)
+    for i in range(len(list_case_data)):
+        list_case_data[i] = list(list_case_data[i])
+    return list_case_data
+
+
 if __name__=='__main__':
-    # print( get_random_phonenum(['131','132','133'])  )
-    print( get_random_phonenum('131','132')  )
-    # str1 = '1234567890abcdefghi中国我们'
-    # # 需求：上述的字符串为底，用它们的字母组合生成随机字符串
-    # # print(len(str1))
-    # # print( str1[random.randint(0,len(str1)-1)] )
-    # str2 = ''
-    # for i in range(10):
-    #     str2 = str2 + str1[random.randint(0,len(str1)-1)]
-    # print(str2)
-    # 需求：实现随机手机号 131  132  133
-    # mobile_num = ['131','132','133']
-    # print( random.choice(mobile_num) )
-    # # 131 0123456789 == 8
-    # print( random.sample('0123456789',8) )
-    # a = ['5', '0', '8', '6', '4', '3', '7', '2']
-    # print( random.choice(mobile_num) + ''.join( a ) )
+    print( get_params_by_mysql('test_baidu_search')  )
+    # mysql_connect = pymysql.connect(host='localhost',port=3306,
+    #                                 user='root',password='123456',
+    #                                 database='api_test',charset='utf8')
+    # # cur = mysql_connect.cursor(cursor=pymysql.cursors.DictCursor) #默认元组类型数据 ，返回字典类型
+    # cur = mysql_connect.cursor() #默认元组类型数据 ，返回字典类型
+    # cur.execute("select test_data,excepted_result from test_data where case_name like '%s%%';"%'test_baidu_search')
+    # # print( cur.fetchone() )
+    # print( cur.fetchall() )
+    # cur.close()
+    # mysql_connect.close()
 
